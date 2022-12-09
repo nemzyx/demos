@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "~/.config/demos/HAGL/modules/hagl/include",
+                "~/.config/demos/HAGL/modules/hagl_sdl2",
+                "/usr/local/include",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include",
+                "/Library/Developer/CommandLineTools/usr/lib/clang/12.0.0/include"
+            ],
+            "defines": [],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "macos-gcc-arm"
+        }
+    ],
+    "version": 4
+}

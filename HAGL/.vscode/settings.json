@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.mat": "graphql",
+    "*.mustache": "html",
+    "*.dot": "handlebars",
+    "backend.h": "c"
+  }
+}
