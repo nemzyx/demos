@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -I../modules/hagl/include -I../modules/hagl_sdl2
+CFLAGS = -Wall -I../modules/hagl/include -I../modules/hagl_sdl2_fluid
 LDFLAGS = -lm
 SDLFLAGS = $(shell sdl2-config --libs --cflags)
 
