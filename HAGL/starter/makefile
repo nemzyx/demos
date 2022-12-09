@@ -10,7 +10,7 @@ src = $(wildcard *.c) ${mod}
 
 obj = $(src:.c=.o)
 
-sandbox: $(obj)
+demo: $(obj)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(SDLFLAGS)
 	rm -f $(mod:.c=.o)
 
