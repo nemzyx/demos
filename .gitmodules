@@ -1,3 +1,6 @@
 [submodule "HAGL/modules/hagl_sdl2"]
 	path = HAGL/modules/hagl_sdl2
 	url = https://github.com/tuupola/hagl_sdl2.git
+[submodule "HAGL/modules/hagl"]
+	path = HAGL/modules/hagl
+	url = https://github.com/tuupola/hagl.git
