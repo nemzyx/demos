@@ -1,0 +1,35 @@
+
+
+This is a demo text file for using the
+no more secrets (nms) CLI
+
+Run with:
+./display-center "nms-demo.txt" | nms -a -c
+
+This demo is supposed to be used together with the
+display-center.sh shell script. The contents of the script:
+
+
+___________________
+
+
+#!/usr/bin/awk -f
+BEGIN {
+  cmd = "tput cols"
+  cmd | getline COLS
+  close(cmd)
+}
+{
+  z = COLS - length;
+  y = int(z / 2);
+  x = z - y;
+  printf "%*s%s%*s\n", x, "", $0, y, "";
+}
+
+___________________
+
+
+Would work great for poems
+Add your own .txt
+
+

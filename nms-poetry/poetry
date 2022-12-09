@@ -1,0 +1,160 @@
+#!/usr/bin/python
+# -*- coding: latin-1 -*-
+#compdef poetry
+
+# python 2.7
+import subprocess
+import random
+import time
+import os
+
+# make CTRL-C exit silently ------
+import signal
+import sys
+def exitProgram(x,y):
+  os.system("clear") # clear screen
+  sys.exit(0)
+signal.signal(signal.SIGINT, exitProgram)
+# --------------------------------
+
+# average reading speed in adults between 200-250 w/m
+READING_SPEED = 180 # words / min
+DECODE_TIME_OFFSET = 30 # seconds
+CREDITS_TIME = 20 # seconds
+SILENT_TIME  = 10 # seconds
+
+HOME = os.path.expanduser('~')
+POEMS_PATH = HOME+"/.config/demos/nms-poetry/poems"
+PRINT_CENTER = HOME+"/.config/demos/nms-poetry/print-center"
+
+os.system("clear") # clear screen
+
+terminal_lines = None
+with os.popen("tput lines") as cmd:
+  terminal_lines = int(cmd.readlines()[0])
+
+def calc_reading_time(words):
+  r = (float(words) / READING_SPEED)
+  minute, points = r.__str__().split('.')
+  seconds = int(points[:2]) * 0.6
+  total_seconds = (int(minute) * 60) + seconds
+  return int(total_seconds)
+
+def poem_padding_calc(x):
+  # x is the difference between
+  # poem height and term height
+  A = 0.2100
+  B = 0.2060
+  C = 0.0025
+  f = A + (B*x) + (C*(x**2)) # A+Bx+Cx^2
+  i = int(round(f))
+  if i <= 0: return 1 # minimum 1 line padding
+  return i
+  #original regression values ----------------
+  # A = -0.4102297, B = 0.22987278, C = 0.0020197576
+
+poems = {}
+
+ls = sorted(os.listdir(POEMS_PATH))
+for file in ls:
+  filename = file[:-4] # remove extension
+  title, author_meta = filename.split(" --- ")
+  meta_split = author_meta.split("___")
+  author = meta_split[0]
+  meta = meta_split[1:]
+  meta_search = { 'Y': None, 'SRC': None, 'PT': 1 }
+  for str in meta:
+    for key in meta_search.keys():
+      if key in str:
+        meta_search[key] = str.split(key)[-1]
+  lines = None
+  words = 0
+  with open(POEMS_PATH+"/" + file, 'r') as fp:
+    lines_array = fp.readlines()
+    lines = len(lines_array)
+    for line in lines_array:
+      words += len(line.split(' '))
+  part_dict = {
+    "file": file,
+    "lines": lines,
+    "words": words,
+    "idx": int(meta_search["PT"])
+  }
+  if title in poems: # if multi part
+    poems[title]["parts"].append(part_dict)
+    continue # early return
+  poems[title] = { "author": author, "parts": [] }
+  if meta_search['Y']:
+    poems[title]["year"] = meta_search['Y']
+  poems[title]["parts"].append(part_dict)
+  poems[title]["src"] = meta_search['SRC']
+
+def credits(poem, title):
+  meta_cmd_top_padding = int(terminal_lines / (45. / 12.))
+  meta_cmd = 'echo "' + ('\n' * meta_cmd_top_padding)
+  meta_cmd += title + '\nby ' + poem["author"]
+  meta_cmd += '\n\n' + poem["year"]
+  meta_cmd_bottom_padding = (terminal_lines - (meta_cmd_top_padding+4)) - 5
+  meta_cmd += '\n' * meta_cmd_bottom_padding
+  meta_cmd += 'Copyright © ' + poem["author"] + '\n'
+  if poem["src"]:
+    meta_cmd += 'origin: ' + poem["src"]
+  meta_cmd += '"'
+  meta_cmd += ' | ' + PRINT_CENTER
+  meta_proc = subprocess.Popen(meta_cmd, shell=True)
+  time.sleep(CREDITS_TIME)
+  os.system("clear") # clear screen
+  meta_proc.terminate()
+
+def play_poem(title):
+  poem = poems[title]
+  for part in poem["parts"]:
+    poem_top_padding = poem_padding_calc(terminal_lines - part["lines"])
+    if(part["idx"] == 1):
+      print('\n' * poem_top_padding)
+    else:
+      print(('\n' * (poem_top_padding-2)))
+      ellipsis = 'echo "...\n\n" | ' + PRINT_CENTER
+      subprocess.Popen(ellipsis, shell=True)
+    nms_cmd = PRINT_CENTER + ' ' + '"'+POEMS_PATH+'/' + part["file"] + '"'
+    nms_cmd += " | nms -a"
+    nms_proc = subprocess.Popen(nms_cmd, shell=True)
+    time.sleep(calc_reading_time(part["words"]) + DECODE_TIME_OFFSET)
+    os.system("clear") # clear screen
+    nms_proc.terminate()
+  # credits + title --------------------
+  credits(poem, title)
+
+
+
+# -----------------------------------------------------------------
+
+exclude_titles = ["Bedste venner", "Børn af natten", 'Fjernsynet']
+
+poem_keys = list(sorted(poems.keys()))
+while True: # do forever ->
+  random.shuffle(poem_keys)
+  for key in poem_keys:
+    if key in exclude_titles:
+      continue # early return
+    play_poem(key)
+    time.sleep(SILENT_TIME)
+
+# -----------------------------------------------------------------
+
+#original poem padding data
+# x = 5, 4, 4, 12, 5, 1, 9, 7, 5, 6, 2, 2, 3, 10
+# print("5   " + str(poem_padding_calc(21)))
+# print("4   " + str(poem_padding_calc(14)))
+# print("4   " + str(poem_padding_calc(16)))
+# print("12  " + str(poem_padding_calc(40)))
+# print("5   " + str(poem_padding_calc(18)))
+# print("1   " + str(poem_padding_calc(5)))
+# print("9   " + str(poem_padding_calc(27)))
+# print("7   " + str(poem_padding_calc(26)))
+# print("5   " + str(poem_padding_calc(18)))
+# print("6   " + str(poem_padding_calc(21)))
+# print("2   " + str(poem_padding_calc(11)))
+# print("2   " + str(poem_padding_calc(20)))
+# print("3   " + str(poem_padding_calc(16)))
+# print("10  " + str(poem_padding_calc(36)))
