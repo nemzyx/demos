@@ -65,7 +65,6 @@ int main()
         hagl_clear(display);
         fps_reset(&fps);
         aps_reset(&bps);
-        break;
       }
     }    
   }
