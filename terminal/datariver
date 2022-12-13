@@ -1,0 +1,2 @@
+#!/bin/zsh
+cmatrix -n -C "white" | lolcat -i -p 100 -F $1

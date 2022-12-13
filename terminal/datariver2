@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+# maybe try one with the bin in .bin/lolcrab ?
+# https://github.com/mazznoer/lolcrab
+cmatrix -n -C "white" | lolcat -i -p 100 -F $1
