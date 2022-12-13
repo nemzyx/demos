@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: latin-1 -*-
-#compdef poetry
 
 # python 2.7
 import subprocess
@@ -21,11 +20,12 @@ signal.signal(signal.SIGINT, exitProgram)
 READING_SPEED = 180 # words / min
 DECODE_TIME_OFFSET = 30 # seconds
 CREDITS_TIME = 20 # seconds
-SILENT_TIME  = 10 # seconds
+SILENT_TIME  = 2 # seconds
 
 HOME = os.path.expanduser('~')
-POEMS_PATH = HOME+"/.config/demos/nms-poetry/poems"
-PRINT_CENTER = HOME+"/.config/demos/nms-poetry/print-center"
+THIS_PATH = HOME+"/.config/demos/terminal/nms-poetry"
+POEMS_PATH   = THIS_PATH+"/poems"
+PRINT_CENTER = THIS_PATH+"/print-center"
 
 os.system("clear") # clear screen
 
